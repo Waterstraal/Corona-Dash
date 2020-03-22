@@ -22,7 +22,7 @@ import { SortOptions } from './sort-bar/sort-bar.component';
   styles: [`
     app-country-stat {
       margin: 1em;
-      width: 25em;
+      width: 35em;
       display: inline-block;
     }`],
   changeDetection: ChangeDetectionStrategy.OnPush

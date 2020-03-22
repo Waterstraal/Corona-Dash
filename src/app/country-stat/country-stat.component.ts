@@ -28,13 +28,19 @@ import { FIELD_EMOJIS } from '../sort-bar/sort-bar.component';
       border-left-color: red;
     }
 
+    h2 {
+      display: flex;
+    }
+
     h2 span {
+      flex-grow: 1;
+      flex-basis: 0;
       filter: grayscale(100%);
     }
 
     h2 span.selected {
       filter: none;
-      font-size: 1.5em;
+      font-size: 1.3em;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
