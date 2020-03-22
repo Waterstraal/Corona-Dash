@@ -10,11 +10,13 @@ import { MatCardModule } from '@angular/material/card';
 import { CountryStatComponent } from './country-stat/country-stat.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SortBarComponent } from './sort-bar/sort-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CountryStatComponent,
+    SortBarComponent,
   ],
   imports: [
     BrowserModule,
