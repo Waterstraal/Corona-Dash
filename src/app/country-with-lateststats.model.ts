@@ -12,3 +12,46 @@ export class CountryWithLatestStats {
     };
   }
 }
+
+function compareOnStatContainerAndField(a: CountryWithLatestStats,
+                                        b: CountryWithLatestStats,
+                                        statContainer: 'percentageIncrease' | 'latestStats',
+                                        field: 'deaths' | 'recovered' | 'confirmed') {
+  const fieldCompareResult = a[statContainer][field] - b[statContainer][field];
+  if (fieldCompareResult < 0) {
+    return 1;
+  }
+  if (fieldCompareResult > 0) {
+    return -1;
+  }
+  return 0;
+}
+
+export function sortCountryWithLatestStats(statContainer: 'percentageIncrease' | 'latestStats', field: 'deaths' | 'recovered' | 'confirmed') {
+  return (a: CountryWithLatestStats, b: CountryWithLatestStats) => {
+
+    const fieldCompareResult = compareOnStatContainerAndField(a, b, statContainer, field);
+    if (fieldCompareResult !== 0) {
+      return fieldCompareResult;
+    }
+
+    const deathComparison = compareOnStatContainerAndField(a, b, 'latestStats', 'deaths');
+    if (deathComparison !== 0) {
+      return deathComparison;
+    }
+
+    const confirmedComparison = compareOnStatContainerAndField(a, b, 'latestStats', 'confirmed');
+    if (confirmedComparison !== 0) {
+      return confirmedComparison;
+    }
+
+    if (a.country < b.country) {
+      return -1;
+    }
+    if (a.country > b.country) {
+      return 1;
+    }
+
+    return 0;
+  };
+}

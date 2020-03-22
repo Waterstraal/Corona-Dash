@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
-import { CountryWithLatestStats } from './country-with-lateststats.model';
+import { CountryWithLatestStats, sortCountryWithLatestStats } from './country-with-lateststats.model';
 import { Covid19Service } from './covid19.service';
 
 export type SortField = 'deaths' | 'recovered' | 'confirmed';
@@ -59,7 +59,7 @@ export class AppComponent {
 
   sortedCovid19Stats$: Observable<CountryWithLatestStats[]> = combineLatest([this.covid19Stats$, this.statContainer$, this.statField$])
     .pipe(
-      map(([val, statContainer, statField]) => val.sort(createSortFn(statContainer, statField))),
+      map(([val, statContainer, statField]) => val.sort(sortCountryWithLatestStats(statContainer, statField))),
       shareReplay(1)
     );
 
@@ -67,32 +67,4 @@ export class AppComponent {
   }
 }
 
-function createSortFn(statContainer: 'percentageIncrease' | 'latestStats', field: 'deaths' | 'recovered' | 'confirmed') {
-  return (a: CountryWithLatestStats, b: CountryWithLatestStats) => {
 
-    const fieldCompareResult = a[statContainer][field] - b[statContainer][field];
-    if (fieldCompareResult < 0) {
-      return 1;
-    }
-    if (fieldCompareResult > 0) {
-      return -1;
-    }
-
-    const deathCompareResult = a['latestStats']['deaths'] - b['latestStats']['deaths'];
-    if (deathCompareResult < 0) {
-      return -1;
-    }
-    if (deathCompareResult > 0) {
-      return 1;
-    }
-
-    if (a.country < b.country) {
-      return -1;
-    }
-    if (a.country > b.country) {
-      return 1;
-    }
-
-    return 0;
-  };
-}
