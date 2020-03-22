@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Covid19HttpService, Covid19Stats } from './covid19-http.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
 import { CountryWithLatestStats } from './country-with-lateststats.model';
+import { Covid19Service } from './covid19.service';
 
 export type SortOptions =
   'percentageDeaths'
@@ -19,13 +19,13 @@ export type StatContainer = 'latestStats' | 'percentageIncrease';
   selector: 'app-root',
   template: `
     <div>
-      <mat-button-toggle-group [(value)]="statField">
+      <mat-button-toggle-group class="stat-field-selector" [(value)]="statField">
         <mat-button-toggle value="deaths" aria-label="Deaths">💀</mat-button-toggle>
         <mat-button-toggle value="confirmed" aria-label="Confirmed">😷</mat-button-toggle>
         <mat-button-toggle value="recovered" aria-label="Recovered">😃</mat-button-toggle>
       </mat-button-toggle-group>
 
-      <mat-button-toggle-group [(value)]="statContainer">
+      <mat-button-toggle-group class="stat-container-selector" [(value)]="statContainer">
         <mat-button-toggle value="latestStats" aria-label="Show total">Total</mat-button-toggle>
         <mat-button-toggle value="percentageIncrease" aria-label="Show percentage increase">Percentage</mat-button-toggle>
       </mat-button-toggle-group>
@@ -63,22 +63,14 @@ export class AppComponent {
     this._statContainer.next(value);
   }
 
-  private covid19Stats$: Observable<CountryWithLatestStats[]> = this.covid19HttpService.get().pipe(
-    map((val: Covid19Stats) => {
-      const result: CountryWithLatestStats[] = [];
-      for (const [key, value] of Object.entries(val)) {
-        result.push(new CountryWithLatestStats(key, value[value.length - 1], value[value.length - 2]));
-      }
-      return result;
-    }),
-    shareReplay(1));
+  private covid19Stats$: Observable<CountryWithLatestStats[]> = this.covid19Service.covid19Stats$.pipe(shareReplay(1));
 
   sortedCovid19Stats$: Observable<CountryWithLatestStats[]> = combineLatest([this.covid19Stats$, this.statContainer$, this.statField$]).pipe(
     map(([val, statContainer, statField]) => val.sort(createSortFn(statContainer, statField))),
     shareReplay(1)
   );
 
-  constructor(private covid19HttpService: Covid19HttpService) {
+  constructor(private covid19Service: Covid19Service) {
   }
 }
 
