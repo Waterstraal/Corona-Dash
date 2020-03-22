@@ -14,7 +14,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 @NgModule({
   declarations: [
     AppComponent,
-    CountryStatComponent
+    CountryStatComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,4 +29,5 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

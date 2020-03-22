@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Covid19DayStats, Covid19HttpService, Covid19Stats } from './covid19-http.service';
+import { Covid19HttpService, Covid19Stats } from './covid19-http.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { filter, map, shareReplay } from 'rxjs/operators';
+import { CountryWithLatestStats } from './country-with-lateststats.model';
 
 export type SortOptions =
   'percentageDeaths'
@@ -11,21 +12,27 @@ export type SortOptions =
   | 'totalRecovered'
   | 'totalConfirmed' ;
 
+export type SortField = 'deaths' | 'recovered' | 'confirmed';
+export type StatContainer = 'latestStats' | 'percentageIncrease';
+
 @Component({
   selector: 'app-root',
   template: `
     <div>
-      <mat-button-toggle-group [(value)]="sortBy">
-        <mat-button-toggle value="percentageDeaths" aria-label="Sort by % Increase Deaths">% Increase 💀</mat-button-toggle>
-        <mat-button-toggle value="percentageConfirmed" aria-label="Sort by % Increase Confirmed">% Increase 😷</mat-button-toggle>
-        <mat-button-toggle value="percentageRecovered" aria-label="Sort by % Increase Recovered">% Increase 😃</mat-button-toggle>
-        <mat-button-toggle value="totalDeaths" aria-label="Sort by Total Deaths">Total 💀</mat-button-toggle>
-        <mat-button-toggle value="totalConfirmed" aria-label="Sort by Total Confirmed">Total 😷</mat-button-toggle>
-        <mat-button-toggle value="totalRecovered" aria-label="Sort by Total Recovered">Total 😃</mat-button-toggle>
+      <mat-button-toggle-group [(value)]="statField">
+        <mat-button-toggle value="deaths" aria-label="Deaths">💀</mat-button-toggle>
+        <mat-button-toggle value="confirmed" aria-label="Confirmed">😷</mat-button-toggle>
+        <mat-button-toggle value="recovered" aria-label="Recovered">😃</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-button-toggle-group [(value)]="statContainer">
+        <mat-button-toggle value="latestStats" aria-label="Show total">Total</mat-button-toggle>
+        <mat-button-toggle value="percentageIncrease" aria-label="Show percentage increase">Percentage</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
     <ng-container *ngIf="sortedCovid19Stats$ | async as covid19Stats; else loading">
-      <app-country-stat *ngFor="let countryStat of covid19Stats" [countryStat]="countryStat"></app-country-stat>
+      <app-country-stat *ngFor="let countryStat of covid19Stats" [countryStat]="countryStat" [statContainer]="statContainer"
+                        [statField]="statField"></app-country-stat>
     </ng-container>
     <ng-template #loading>
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -34,14 +41,26 @@ export type SortOptions =
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  private sortBy$: BehaviorSubject<SortOptions> = new BehaviorSubject<SortOptions>('percentageDeaths');
+  private _statField: BehaviorSubject<SortField> = new BehaviorSubject<SortField>('deaths');
+  private statField$: Observable<SortField> = this._statField.pipe(filter(val => !!val));
 
-  get sortBy(): SortOptions {
-    return this.sortBy$.getValue();
+  get statField(): SortField {
+    return this._statField.getValue();
   }
 
-  set sortBy(value: SortOptions) {
-    this.sortBy$.next(value);
+  set statField(value: SortField) {
+    this._statField.next(value);
+  }
+
+  private _statContainer: BehaviorSubject<StatContainer> = new BehaviorSubject<StatContainer>('latestStats');
+  private statContainer$: Observable<StatContainer> = this._statContainer.pipe(filter(val => !!val));
+
+  get statContainer(): StatContainer {
+    return this._statContainer.getValue();
+  }
+
+  set statContainer(value: StatContainer) {
+    this._statContainer.next(value);
   }
 
   private covid19Stats$: Observable<CountryWithLatestStats[]> = this.covid19HttpService.get().pipe(
@@ -54,8 +73,8 @@ export class AppComponent {
     }),
     shareReplay(1));
 
-  sortedCovid19Stats$: Observable<CountryWithLatestStats[]> = combineLatest([this.covid19Stats$, this.sortBy$]).pipe(
-    map(([val, sortBy]) => val.sort(sortFunctions[sortBy])),
+  sortedCovid19Stats$: Observable<CountryWithLatestStats[]> = combineLatest([this.covid19Stats$, this.statContainer$, this.statField$]).pipe(
+    map(([val, statContainer, statField]) => val.sort(createSortFn(statContainer, statField))),
     shareReplay(1)
   );
 
@@ -63,24 +82,32 @@ export class AppComponent {
   }
 }
 
-const sortFunctions: { [key in SortOptions]: (a: CountryWithLatestStats, b: CountryWithLatestStats) => number } = {
-  percentageDeaths: (a: CountryWithLatestStats, b: CountryWithLatestStats) => b.percentageIncrease.deaths - a.percentageIncrease.deaths,
-  percentageRecovered: (a: CountryWithLatestStats, b: CountryWithLatestStats) => b.percentageIncrease.recovered - a.percentageIncrease.recovered,
-  percentageConfirmed: (a: CountryWithLatestStats, b: CountryWithLatestStats) => b.percentageIncrease.confirmed - a.percentageIncrease.confirmed,
-  totalDeaths: (a: CountryWithLatestStats, b: CountryWithLatestStats) => b.latestStats.deaths - a.latestStats.deaths,
-  totalRecovered: (a: CountryWithLatestStats, b: CountryWithLatestStats) => b.latestStats.recovered - a.latestStats.recovered,
-  totalConfirmed: (a: CountryWithLatestStats, b: CountryWithLatestStats) => b.latestStats.confirmed - a.latestStats.confirmed,
-};
+function createSortFn(statContainer: 'percentageIncrease' | 'latestStats', field: 'deaths' | 'recovered' | 'confirmed') {
+  return (a: CountryWithLatestStats, b: CountryWithLatestStats) => {
 
-export class CountryWithLatestStats {
-  public percentageIncrease: Covid19DayStats;
+    const fieldCompareResult = a[statContainer][field] - b[statContainer][field];
+    if (fieldCompareResult < 0) {
+      return 1;
+    }
+    if (fieldCompareResult > 0) {
+      return -1;
+    }
 
-  constructor(public country: string, public latestStats: Covid19DayStats, public oneDayBeforeLatestStats: Covid19DayStats) {
-    this.percentageIncrease = {
-      deaths: oneDayBeforeLatestStats.deaths <= 0 ? 0 : (latestStats.deaths - oneDayBeforeLatestStats.deaths) / oneDayBeforeLatestStats.deaths,
-      recovered: oneDayBeforeLatestStats.deaths <= 0 ? 0 : (latestStats.recovered - oneDayBeforeLatestStats.recovered) / oneDayBeforeLatestStats.recovered,
-      confirmed: oneDayBeforeLatestStats.deaths <= 0 ? 0 : (latestStats.confirmed - oneDayBeforeLatestStats.confirmed) / oneDayBeforeLatestStats.confirmed,
-      date: latestStats.date
-    };
-  }
+    const deathCompareResult = a['latestStats']['deaths'] - b['latestStats']['deaths'];
+    if (deathCompareResult < 0) {
+      return -1;
+    }
+    if (deathCompareResult > 0) {
+      return 1;
+    }
+
+    if (a.country < b.country) {
+      return -1;
+    }
+    if (a.country > b.country) {
+      return 1;
+    }
+
+    return 0;
+  };
 }
