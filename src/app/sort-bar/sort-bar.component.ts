@@ -44,7 +44,7 @@ export class SortBarComponent implements OnInit, OnDestroy {
     this._statField.next(value);
   }
 
-  private _statContainer: BehaviorSubject<StatContainer> = new BehaviorSubject<StatContainer>('latestStats');
+  private _statContainer: BehaviorSubject<StatContainer> = new BehaviorSubject<StatContainer>('percentageIncrease');
   private statContainer$: Observable<StatContainer> = this._statContainer.pipe(filter(val => !!val));
 
   get statContainer(): StatContainer {

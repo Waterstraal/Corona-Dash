@@ -6,12 +6,17 @@ import { CountryWithLatestStats } from '../country-with-lateststats.model';
   template: `
     <mat-card [class.death]="countryStat.latestStats.deaths > 0">
       <mat-card-title>{{ countryStat.country }}</mat-card-title>
-      <h1 *ngIf="statContainer === 'latestStats'">{{ countryStat.latestStats[statField] }}</h1>
-      <h1 *ngIf="statContainer === 'percentageIncrease'">{{ countryStat.percentageIncrease[statField] | percent }}</h1>
-      <!--      <p>💀 {{countryStat.latestStats.date | date }}: {{countryStat.latestStats.deaths}}</p>-->
-      <!--      <p>💀 {{countryStat.oneDayBeforeLatestStats.date | date }}: {{countryStat.oneDayBeforeLatestStats.deaths}}</p>-->
+      <h1>{{ statContainer === 'latestStats' ? countryStat[statContainer][statField] : countryStat[statContainer][statField] | percent }}</h1>
     </mat-card>`,
-  styleUrls: ['./country-stat.component.scss'],
+  styles: [`
+    mat-card {
+      border-left: 5px solid green;
+    }
+
+    mat-card.death {
+      border-left-color: red;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CountryStatComponent {
