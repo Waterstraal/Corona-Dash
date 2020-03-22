@@ -19,7 +19,12 @@ import { SortOptions } from './sort-bar/sort-bar.component';
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </ng-template>
   `,
-  styleUrls: ['./app.component.scss'],
+  styles: [`
+    app-country-stat {
+      margin: 1em;
+      width: 25em;
+      display: inline-block;
+    }`],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {

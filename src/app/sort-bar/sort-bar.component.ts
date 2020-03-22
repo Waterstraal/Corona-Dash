@@ -4,16 +4,26 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 export type SortField = 'deaths' | 'recovered' | 'confirmed';
 export type StatContainer = 'latestStats' | 'percentageIncrease';
-export interface SortOptions { statContainer: StatContainer, statField: SortField }
+
+export interface SortOptions {
+  statContainer: StatContainer;
+  statField: SortField;
+}
+
+export const FIELD_EMOJIS: Record<SortField, string> = {
+  deaths: '💀',
+  recovered: '😃',
+  confirmed: '😷'
+};
 
 @Component({
   selector: 'app-sort-bar',
   template: `
     <div>
       <mat-button-toggle-group class="stat-field-selector" [(value)]="statField">
-        <mat-button-toggle value="deaths" aria-label="Deaths">💀</mat-button-toggle>
-        <mat-button-toggle value="confirmed" aria-label="Confirmed">😷</mat-button-toggle>
-        <mat-button-toggle value="recovered" aria-label="Recovered">😃</mat-button-toggle>
+        <mat-button-toggle value="deaths" aria-label="Deaths">{{fieldEmojis['deaths']}}</mat-button-toggle>
+        <mat-button-toggle value="confirmed" aria-label="Confirmed">{{fieldEmojis['confirmed']}}</mat-button-toggle>
+        <mat-button-toggle value="recovered" aria-label="Recovered">{{fieldEmojis['recovered']}}</mat-button-toggle>
       </mat-button-toggle-group>
 
       <mat-button-toggle-group class="stat-container-selector" [(value)]="statContainer">
@@ -35,6 +45,8 @@ export class SortBarComponent implements OnInit, OnDestroy {
 
   private _statField: BehaviorSubject<SortField> = new BehaviorSubject<SortField>('deaths');
   private statField$: Observable<SortField> = this._statField.pipe(filter(val => !!val));
+
+  readonly fieldEmojis: typeof FIELD_EMOJIS = FIELD_EMOJIS;
 
   get statField(): SortField {
     return this._statField.getValue();
