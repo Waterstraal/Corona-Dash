@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { CountryStatComponent } from './country-stat/country-stat.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { CountryStatComponent } from './country-stat/country-stat.component';
     HttpClientModule,
     CommonModule,
     BrowserAnimationsModule,
-    MatCardModule
+    MatCardModule,
+    MatProgressBarModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

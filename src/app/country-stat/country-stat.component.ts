@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CountryWithLatestStats } from '../app.component';
 
 @Component({
@@ -9,10 +9,11 @@ import { CountryWithLatestStats } from '../app.component';
       <h1>
         {{ countryStat.percentageIncrease.deaths | percent }}
       </h1>
-      <h3>💀 today: {{countryStat.latestStats.deaths}}</h3>
-      <h3>💀 yesterday: {{countryStat.oneDayBeforeLatestStats.deaths}}</h3>
+      <p>💀 {{countryStat.latestStats.date | date }}: {{countryStat.latestStats.deaths}}</p>
+      <p>💀 {{countryStat.oneDayBeforeLatestStats.date | date }}: {{countryStat.oneDayBeforeLatestStats.deaths}}</p>
     </mat-card>`,
-  styleUrls: ['./country-stat.component.scss']
+  styleUrls: ['./country-stat.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CountryStatComponent {
   @Input() countryStat: CountryWithLatestStats;
