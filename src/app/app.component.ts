@@ -4,14 +4,6 @@ import { filter, map, shareReplay } from 'rxjs/operators';
 import { CountryWithLatestStats } from './country-with-lateststats.model';
 import { Covid19Service } from './covid19.service';
 
-export type SortOptions =
-  'percentageDeaths'
-  | 'percentageRecovered'
-  | 'percentageConfirmed'
-  | 'totalDeaths'
-  | 'totalRecovered'
-  | 'totalConfirmed' ;
-
 export type SortField = 'deaths' | 'recovered' | 'confirmed';
 export type StatContainer = 'latestStats' | 'percentageIncrease';
 
@@ -65,10 +57,11 @@ export class AppComponent {
 
   private covid19Stats$: Observable<CountryWithLatestStats[]> = this.covid19Service.covid19Stats$.pipe(shareReplay(1));
 
-  sortedCovid19Stats$: Observable<CountryWithLatestStats[]> = combineLatest([this.covid19Stats$, this.statContainer$, this.statField$]).pipe(
-    map(([val, statContainer, statField]) => val.sort(createSortFn(statContainer, statField))),
-    shareReplay(1)
-  );
+  sortedCovid19Stats$: Observable<CountryWithLatestStats[]> = combineLatest([this.covid19Stats$, this.statContainer$, this.statField$])
+    .pipe(
+      map(([val, statContainer, statField]) => val.sort(createSortFn(statContainer, statField))),
+      shareReplay(1)
+    );
 
   constructor(private covid19Service: Covid19Service) {
   }
