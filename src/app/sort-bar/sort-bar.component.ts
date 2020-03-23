@@ -28,7 +28,7 @@ export const FIELD_EMOJIS: Record<SortField, string> = {
 
       <mat-button-toggle-group class="stat-container-selector" [(value)]="statContainer">
         <mat-button-toggle value="latestStats" aria-label="Show total">Total</mat-button-toggle>
-        <mat-button-toggle value="percentageIncrease" aria-label="Show percentage increase">Percentage</mat-button-toggle>
+        <mat-button-toggle value="percentageIncrease" aria-label="Show percentage increase">Change</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
   `,
