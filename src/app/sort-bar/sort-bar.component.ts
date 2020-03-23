@@ -19,7 +19,7 @@ export const FIELD_EMOJIS: Record<SortField, string> = {
 @Component({
   selector: 'app-sort-bar',
   template: `
-    <div>
+    <div class="sort-bar">
       <mat-button-toggle-group class="stat-field-selector" [(value)]="statField">
         <mat-button-toggle value="deaths" aria-label="Deaths">{{fieldEmojis['deaths']}}</mat-button-toggle>
         <mat-button-toggle value="confirmed" aria-label="Confirmed">{{fieldEmojis['confirmed']}}</mat-button-toggle>
@@ -33,6 +33,11 @@ export const FIELD_EMOJIS: Record<SortField, string> = {
     </div>
   `,
   styles: [`
+    .sort-bar {
+      text-align: center;
+      padding-top: 0.5em;
+    }
+
     .stat-field-selector {
       margin-right: 2em;
     }
