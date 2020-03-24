@@ -1,6 +1,6 @@
 # Corona-Dash
 
-A simple dashboard visualising Corona data.
+A simple dashboard visualising Corona data: [Live website](https://waterstraal.github.io/Corona-Dash/)
 
 Build using [Angular 9](https://angular.io)
 
