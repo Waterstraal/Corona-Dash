@@ -7,14 +7,25 @@ import { CountryWithLatestStats } from '../country-with-lateststats.model';
     <mat-card [class.death]="countryStat.latestStats.deaths > 0">
       <mat-card-title>{{ countryStat.country }}</mat-card-title>
       <h2>
-        <span [class.selected]="statField === 'deaths'">
-          <app-single-stat [countryStat]="countryStat" [statContainer]="statContainer" statField="deaths"></app-single-stat>
+        <span [class.selected]="statField === 'deaths' && statContainer === 'latestStats'">
+          <app-single-stat [countryStat]="countryStat" statContainer="latestStats" statField="deaths"></app-single-stat>
         </span>
-        <span [class.selected]="statField === 'confirmed'">
-          <app-single-stat [countryStat]="countryStat" [statContainer]="statContainer" statField="confirmed"></app-single-stat>
+        <span [class.selected]="statField === 'confirmed' && statContainer === 'latestStats'">
+          <app-single-stat [countryStat]="countryStat" statContainer="latestStats" statField="confirmed"></app-single-stat>
         </span>
-        <span [class.selected]="statField === 'recovered'">
-          <app-single-stat [countryStat]="countryStat" [statContainer]="statContainer" statField="recovered"></app-single-stat>
+        <span [class.selected]="statField === 'recovered' && statContainer === 'latestStats'">
+          <app-single-stat [countryStat]="countryStat" statContainer="latestStats" statField="recovered"></app-single-stat>
+        </span>
+      </h2>
+      <h2>
+        <span [class.selected]="statField === 'deaths' && statContainer === 'percentageIncrease'">
+          <app-single-stat [countryStat]="countryStat" statContainer="percentageIncrease" statField="deaths"></app-single-stat>
+        </span>
+        <span [class.selected]="statField === 'confirmed' && statContainer === 'percentageIncrease'">
+          <app-single-stat [countryStat]="countryStat" statContainer="percentageIncrease" statField="confirmed"></app-single-stat>
+        </span>
+        <span [class.selected]="statField === 'recovered' && statContainer === 'percentageIncrease'">
+        <app-single-stat [countryStat]="countryStat" statContainer="percentageIncrease" statField="recovered"></app-single-stat>
         </span>
       </h2>
     </mat-card>`,
