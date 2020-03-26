@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { CountryWithLatestStats, sortCountryWithLatestStats } from './country-with-lateststats.model';
-import { Covid19Service } from './covid19.service';
-import { SortOptions } from './sort-bar/sort-bar.component';
+import { CountryWithLatestStats, sortCountryWithLatestStats } from './services/country-with-lateststats.model';
+import { Covid19Service } from './services/covid19.service';
+import { SortOptions } from './components/sort-bar.component';
 
 @Component({
   selector: 'app-root',

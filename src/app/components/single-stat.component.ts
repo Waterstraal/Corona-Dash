@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CountryWithLatestStats } from '../country-with-lateststats.model';
-import { FIELD_EMOJIS } from '../sort-bar/sort-bar.component';
+import { CountryWithLatestStats } from '../services/country-with-lateststats.model';
+import { FIELD_EMOJIS } from './sort-bar.component';
 
 @Component({
   selector: 'app-single-stat',

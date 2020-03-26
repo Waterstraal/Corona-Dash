@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CountryWithLatestStats } from '../country-with-lateststats.model';
+import { CountryWithLatestStats } from '../services/country-with-lateststats.model';
 
 @Component({
   selector: 'app-country-stat',

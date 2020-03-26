@@ -1,4 +1,4 @@
-import { Covid19DayStats } from './covid19-http.service';
+import { Covid19DayStats } from '../api/covid19-http.service';
 
 export class CountryWithLatestStats {
   public percentageIncrease: Covid19DayStats;

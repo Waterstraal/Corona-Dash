@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Covid19HttpService, Covid19Stats } from './covid19-http.service';
+import { Covid19HttpService, Covid19Stats } from '../api/covid19-http.service';
 import { CountryWithLatestStats } from './country-with-lateststats.model';
 import { map } from 'rxjs/operators';
 
