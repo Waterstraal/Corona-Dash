@@ -9,21 +9,25 @@ import { SortOptions } from './components/sort-bar.component';
   selector: 'app-root',
   template: `
     <app-sort-bar (sortOptions)="updateSorting($event)"></app-sort-bar>
-    <ng-container *ngIf="sortedCovid19Stats$ | async as covid19Stats; else loading">
-      <app-country-stat *ngFor="let countryStat of covid19Stats.stats"
-                        [countryStat]="countryStat"
-                        [statContainer]="covid19Stats.sortOptions.statContainer"
-                        [statField]="covid19Stats.sortOptions.statField"></app-country-stat>
-    </ng-container>
+    <div class="container-fluid">
+      <div class="row">
+        <ng-container *ngIf="sortedCovid19Stats$ | async as covid19Stats; else loading">
+          <app-country-stat class="col-xs-12 col-lg-6 col-xl-4"
+                            *ngFor="let countryStat of covid19Stats.stats"
+                            [countryStat]="countryStat"
+                            [statContainer]="covid19Stats.sortOptions.statContainer"
+                            [statField]="covid19Stats.sortOptions.statField"></app-country-stat>
+        </ng-container>
+      </div>
+    </div>
     <ng-template #loading>
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </ng-template>
   `,
   styles: [`
     app-country-stat {
-      margin: 1em;
-      width: 35em;
-      display: inline-block;
+      display: block;
+      padding-top: 15px;
     }`],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
